@@ -8,7 +8,6 @@ solution
 
 SELECT * FROM playground.bad_drivers LIMIT 100
 
-show create table playground.bad_drivers
 
 with national_average as (
   select avg(fatal_collisions_per_billion_miles) as avg_fatal_collisions

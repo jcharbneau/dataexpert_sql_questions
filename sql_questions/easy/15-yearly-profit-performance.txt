@@ -8,10 +8,6 @@ solution
 
 SELECT * FROM playground.superstore LIMIT 100
 
-show create table playground.superstore
-describe playground.superstore
-
-
 select 
     extract(year from order_date) as order_year,
     round(

@@ -8,12 +8,10 @@ solution
 
 
 SELECT * FROM playground.rental LIMIT 100
-describe playground.rental
-show create table playground.rental
+
 
 SELECT * FROM playground.streams LIMIT 100
-describe playground.streams
-show create table playground.streams
+
 
 -- SELECT * FROM playground.rental LIMIT 100
 
