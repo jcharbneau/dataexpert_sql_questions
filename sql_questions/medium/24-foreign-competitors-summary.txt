@@ -1,0 +1,25 @@
+24-*Summarizing Foreign Competitors by Country with Total Summary
+ 
+Given the playground.foreign_competitors table with columns: competitor and country, write a SQL query to calculate the number of competitors per country. Additionally, include a final summary row that shows "Total:" and the total number of competitors. The resulting table should have two columns: country and competitors, sorted by competitors and country names in ascending order, and include the summary row at the bottom.
+These are the tables for this question:
+playground.foreign_competitors
+
+
+-- SELECT * FROM playground.foreign_competitors LIMIT 100
+
+
+select country, competitors from (
+  select country, count(*) as competitors
+  from playground.foreign_competitors
+  group by country
+  union all
+  select 'Total:' as country, count(*) as competitors
+  from playground.foreign_competitors
+) as results
+
+order by 
+  case when country = 'Total:' then 1 else 0 end,
+  competitors asc,
+  country asc
+
+  

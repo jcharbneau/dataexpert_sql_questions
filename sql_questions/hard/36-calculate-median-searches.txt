@@ -1,0 +1,112 @@
+36-***Calculating Median Searches per User
+ 
+Using the table playground.search_freq with each row representing the number of searches (searches column) made by a certain number of users (users column), write a SQL query to calculate the median number of searches per user up to one decimal place and be sure to cast it as a double.
+
+These are the tables to query for this question:
+playground.search_freq
+searches int
+num_users int
+Your answer should include these columns:
+median double
+
+
+
+
+
+
+
+-- sort the searches
+with sortedsearches as (
+  select
+    searches,
+    num_users,
+    -- cumulative_users
+    sum(num_users) over (order by searches) as cumulative_users,
+    -- cumulative_searches
+    sum(searches * num_users) over (order by searches) as cumulative_searches,
+    -- total users
+    sum(num_users) over () as total_users,
+    -- total searches
+    sum(searches * num_users) over () as total_searches
+  from
+    playground.search_freq
+  
+),
+-- calculate our median values
+mediancalc as (
+
+  select
+    searches,
+    num_users,
+    cumulative_users,
+    cumulative_searches,
+    total_users,
+    total_searches,
+    -- lag
+    lag(cumulative_users, 1, 0) over (order by searches) as prev_cumulative_users,
+    case
+      when total_users % 2 = 0 then
+        (total_users / 2.0, (total_users / 2.0) + 1)
+      else
+        (total_users / 2.0 + 0.5, total_users / 2.0 + 0.5)
+    end as median_range
+  from
+    sortedsearches
+)
+
+select 
+
+
+
+demonstration of challenges in understand the requirements
+
+-- alternate but inaccurate
+select avg(searches) as median from playground.search_freq
+
+
+select * from (
+	values
+	(1, 20),
+	(2, 20),
+	(3, 20),
+	(50, 1)
+) as t (searches, num_users)
+
+original data
+with search_freq_override as (
+  select * from (
+  	values
+  	(1, 2),
+  	(2, 2),
+  	(3, 3),
+  	(4, 1)
+  ) as t (searches, num_users)
+)
+
+
+--- another one that is likely wrong (note the avg(searches) call, which is just mean again...)
+
+
+with expanded_dataset as (
+  select
+    searches
+  from 
+    playground.search_freq
+    join unnest(sequence(1,num_users)) as t(n) on true
+),
+sorted as (
+  select 
+    searches,
+    row_number() over (order by searches) as rn,
+    count(*) over() as total_count
+  from
+    expanded_dataset  
+)
+
+select 
+  avg(searches) as median
+from sorted
+where
+  rn in (floor((total_count + 1) / 2), ceil((total_count + 1) / 2))
+  
+  

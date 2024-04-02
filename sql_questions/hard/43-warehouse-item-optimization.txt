@@ -1,0 +1,85 @@
+43-***Optimizing Stock of Prime and Non-Prime Items in a Warehouse
+ 
+Given a warehouse with a capacity of 500,000 square feet, Amazon wishes to optimize the number of items stocked, prioritizing prime items. The goal is to fill the warehouse with as many prime items as possible and then supplement the remaining space with non-prime items. However, there are new operational constraints: prime and non-prime items must be stocked in equal quantities, and there must always be non-prime items in stock. Assuming each item occupies the same amount of space, using the table playground.inventory, write a query to determine the maximum number of prime and non-prime items that can be accommodated in the warehouse. The output should list the item_type (prime_eligible or not_prime) followed by the maximum number of item_count that can be stocked, ensuring item counts are whole numbers and adhering to the given constraints and prime_eligible first.
+
+These are the tables to query for this question:
+
+playground.inventory
+item_id int
+item_type string
+item_category string
+square_footage double
+
+Your answer should include these columns:
+item_type varchar
+item_count integer
+
+
+
+-- SELECT * FROM playground.inventory LIMIT 100
+
+
+with item_space_requirements as (
+
+  select 
+    avg(square_footage) as avg_space_per_item
+  from playground.inventory
+),
+total_items_possible as (
+  select
+    floor((500000 /2 ) / avg_space_per_item) as max_items_per_type
+  from
+    item_space_requirements
+)
+
+
+
+select
+  'prime_eligible' as item_type,
+  max_items_per_type as item_count
+from 
+  total_items_possible
+  
+ union all
+  
+select
+  'not_prime' as item_type,
+  max_items_per_type as item_count
+from
+total_items_possible 
+
+
+
+
+with item_counts as (
+    select
+        'prime_eligible' as item_type,
+        floor((500000 / 2) / (select avg(square_footage) from playground.inventory where item_type = 'prime_eligible')) as item_count
+    union all
+    select
+        'not_prime' as item_type,
+        floor((500000 / 2) / (select avg(square_footage) from playground.inventory where item_type = 'not_prime'))
+)
+select item_type, item_count from item_counts;
+
+
+--
+solution
+--
+
+
+
+
+
+--
+video
+--
+
+
+step 1
+
+
+step 2
+
+
+step 3

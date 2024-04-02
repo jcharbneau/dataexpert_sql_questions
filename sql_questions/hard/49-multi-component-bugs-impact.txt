@@ -1,0 +1,21 @@
+49-***Identifying Multi-Component Bugs and Their Impact
+ 
+Analyze the playground.bug, playground.component, and playground.bug_component tables to identify bugs affecting multiple components. Bug table contains num (unique bug number) and title (bug title). Component table includes id (unique component id) and title (component title). BugComponent table links bugs to components with bug_num (references Bug.num) and component_id (references Component.id). The task is to list each bug (that affects more than one component) with the titles of affected components and the total number of bugs in these components. Output columns: bug_title, component_title, bugs_in_component, ordered by bugs_in_component (descending), then by bug_title (ascending).
+
+These are the tables to query for this question:
+
+playground.bug
+num int
+title string
+
+playground.component
+id int
+title string
+playground.bug_component
+bug_num int
+component_id int
+
+Your answer should include these columns:
+bug_title varchar
+component_title varchar
+bugs_in_component integer

@@ -1,0 +1,34 @@
+25-*Top 2 Customers with Highest Sales Every Month
+ 
+Using the table playground.sales, Identify the top 2 customers based on their total sales for each month. Display the result based on asc order of their rank and month.
+
+
+-- SELECT * FROM playground.sales LIMIT 100
+
+
+-- total sales per customer for each month
+with monthly_sales as (
+  select 
+    id, 
+    month, 
+    sum(sales) as total_sales
+from playground.sales
+group by 
+    month, 
+    id
+),
+-- rank the totals for each month, with the highest
+-- sales getting ranked the lowest (highest = rank 1)
+ranked_sales as (
+  select 
+    id,
+    month,
+    total_sales,
+    RANK() OVER (PARTITION BY month ORDER BY total_sales DESC) AS rank
+  from monthly_sales
+)
+
+select id, month, total_sales, rank
+from ranked_sales where rank <= 2
+order by rank asc, month asc
+

@@ -1,0 +1,20 @@
+29-*Identify Products Sold Exclusively in January 2024
+ 
+Using the tables playground.products and playground.product_sales, write a SQL query to find products that were sold exclusively within the month of January 2024 (from "2024-01-01" to "2024-01-31", inclusive). The output should include the product_id and product_name for each qualifying product.
+
+
+-- SELECT * FROM playground.products LIMIT 100
+-- SELECT * FROM playground.product_sales LIMIT 100
+
+
+select distinct p.product_id, p.product_name 
+from playground.product_sales s
+join playground.products p on s.product_id = p.product_id
+where date(s.sale_date) between date '2024-01-01' and date '2024-01-31'
+and not exists (
+  select 1 
+  from playground.product_sales s2
+  where s2.product_id = s.product_id
+  and  (date(s2.sale_date) < date '2024-01-01'
+    or date(s2.sale_date) > date '2024-01-31')
+)

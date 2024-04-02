@@ -1,0 +1,48 @@
+26-*Identifying Active Businesses Based on Event Occurrences
+ 
+Using the playground.business_events table, identify all active businesses. An active business is defined as one that has more than one event type with occurrences greater than the average occurrences of that event type among all businesses. The goal is to filter businesses based on their activity level, comparing individual event occurrences to the overall average for those event types. The result should be a table with one column called business_id with all the business ids that are active.
+
+
+-- SELECT * FROM playground.business_events LIMIT 100
+
+-- cte for average occurences by event_type
+with event_type_averages as (
+  select 
+    event_type,
+    avg(occurences) as avg_occurences
+  from playground.business_events
+  group by event_type
+),
+-- cte to identify business above avg
+business_above_average as (
+  select
+    be.business_id,
+    be.event_type
+  from
+    playground.business_events be
+  join
+    event_type_averages eta on be.event_type = eta.event_type
+  where
+    be.occurences > eta.avg_occurences
+),
+-- cte to identify businesses with more than one 
+--  event_type w/ occurences > avg
+active_businesses as (
+  select
+    business_id,
+    count(*) as event_type_count
+  from
+    business_above_average
+  group by
+    business_id
+  having count(*) > 1
+
+)
+
+-- select * from business_above_average
+
+select 
+  business_id
+from
+  active_businesses
+

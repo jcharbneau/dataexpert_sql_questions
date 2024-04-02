@@ -1,0 +1,22 @@
+39-***Countries and Their Preferences for Beer, Spirit, and Wine
+ 
+Create a SQL query to find all countries and their preference for beer, spirit, and wine, based on the highest serving type as their preference. The output should show only the countries whose preferences are wine and spirits, ordered in ascending order of the country name.
+
+-- SELECT * FROM playground.drinks LIMIT 100
+
+
+select 
+    country,
+    case 
+      when beer_servings >= spirit_servings AND beer_servings >= wine_servings THEN 'Beer'
+      when spirit_servings >= beer_servings AND spirit_servings >= wine_servings THEN 'Spirit'
+      else 'Wine'
+    end as preferred_drink
+from playground.drinks
+where 
+  (spirit_servings > beer_servings AND spirit_servings > wine_servings)
+ or
+  (wine_servings > beer_servings and wine_servings > spirit_servings)
+order by country asc
+
+

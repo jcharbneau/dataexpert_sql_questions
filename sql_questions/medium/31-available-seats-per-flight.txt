@@ -1,0 +1,25 @@
+31-*Calculating Available Seats on Flights
+ 
+Calculate the number of seats not yet purchased for each flight. Use three tables: playground.flights (with columns: flight_id, plane_id), playground.planes (with columns: plane_id, number_of_seats), and playground.purchases (with columns: flight_id, seat_no). Each row in purchases is unique for (flight_id, seat_no) pairs. For each flight_id, compute the free_seats as the number of seats not purchased. Order the results by flight_id in ascending order. Ensure consistency in purchases, with no records for non-existing flight_ids or seat_nos.
+These are the tables for this question:
+playground.flights
+playground.planes
+playground.purchases
+
+
+-- SELECT * FROM playground.flights LIMIT 100
+-- SELECT * FROM playground.planes LIMIT 100
+-- SELECT * FROM playground.purchases LIMIT 100
+
+-- select count(*) from playground.purchases pu where pu.flight_id = 87
+
+select
+  f.flight_id,
+  -- p.number_of_seats,
+  p.number_of_seats - coalesce((select count(*) from playground.purchases pu where pu.flight_id = f.flight_id),0) as free_seats
+from playground.flights f
+join playground.planes p on f.plane_id = p.plane_id
+group by 
+  f.flight_id, p.number_of_seats
+order by
+  f.flight_id asc

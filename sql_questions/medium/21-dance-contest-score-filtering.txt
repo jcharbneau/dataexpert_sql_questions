@@ -1,0 +1,47 @@
+21-*Filtering Dance Contest Scores
+ 
+Given a table playground.dance_scores (columns: arbiter_id, first_criterion, second_criterion, third_criterion) with scores from 1 to 10 awarded by judges in a dance contest, write a query to exclude scores from any judge who awarded an extreme score (either minimum or maximum) for at least two criteria. Return the filtered scores, sorted by arbiter_id.
+
+
+-- SELECT * FROM playground.dance_scores LIMIT 100
+
+
+-- identify the min and max for each criterion
+with extremeScores as (
+  select
+    min(first_criterion) as min_first,
+    max(first_criterion) as max_first,
+    min(second_criterion) as min_second,
+    max(second_criterion) as max_second,
+    min(third_criterion) as min_third,
+    max(third_criterion) as max_third
+  from playground.dance_scores
+),
+-- identify judges with extreme scores
+judgesExtremeScores as (
+  select
+    ds.arbiter_id,
+    (
+      case when first_criterion in (es.min_first, es.max_first)  then 1 else 0 end +
+      case when second_criterion in (es.min_second, es.max_second) then 1 else 0 end + 
+      case when third_criterion in (es.min_third, es.max_third) then 1 else 0 end
+    ) as extreme_score_count
+  
+  from playground.dance_scores ds
+  cross join extremeScores es
+)
+
+select 
+  ds.arbiter_id,
+  ds.first_criterion,
+  ds.second_criterion,
+  ds.third_criterion
+from playground.dance_scores ds
+where ds.arbiter_id not in (
+  select
+    arbiter_id
+  from judgesExtremeScores
+  where extreme_score_count >= 2
+)
+order by ds.arbiter_id asc
+

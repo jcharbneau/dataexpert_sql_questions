@@ -1,0 +1,42 @@
+34-*Transform workers_info Table to Exclude NULL Values
+ 
+Given a table named playground.workers_info, write a SQL query to transform this table. The transformation should result in a table with three columns: id, column_name, and value, where column_name is the name of the original column containing a non-NULL value for each id, and value is the stringified non-NULL value from this column. Exclude rows where the original value is NULL. The result should be sorted by id in ascending order, and for rows with the same id, sorted by column_name in ascending order.
+
+
+-- SELECT * FROM playground.workers_info LIMIT 100
+
+
+
+
+select 
+  id, 
+  'name' as column_name, 
+  cast(name as varchar) as value
+from 
+  playground.workers_info
+where name is not null
+
+union all
+
+select 
+  id,
+  'date_of_birth' as column_name,
+  cast(date_of_birth as varchar) as value
+from
+  playground.workers_info
+where date_of_birth is not null
+
+union all
+
+select
+  id,
+  'salary' as column_name, 
+  cast(salary as varchar) as value
+from 
+  playground.workers_info
+where 
+  salary is not null
+  
+order by 
+  id asc, 
+  column_name asc

@@ -1,0 +1,59 @@
+12-Filtering Students in Active Clubs
+ 
+Given tables clubs (id: unique club id, name: club name) and students (id: unique student id, name: student name, club_id: club's id), return a list from the students table for those who are in clubs that still exist in the clubs table. The result should be sorted by students' ids and include only those students whose club_id matches an id in the clubs table.
+
+
+
+--
+solution
+--
+
+SELECT * FROM playground.clubs LIMIT 100
+select * from playground.students LIMIT 100
+
+select 
+  students.id, 
+  students.name, 
+  students.club_id 
+from playground.students
+inner join 
+  playground.clubs on students.club_id = clubs.id
+order by students.id asc
+
+
+
+
+
+
+
+
+--
+video
+--
+
+
+step 1
+  select 
+    id, 
+    name, 
+    club_id 
+  from 
+    playground.students
+
+step 2
+
+Inner join joins two tables under a condition. Every row from a table will be joined with every row from the other table only when the given condition is satisfied.
+https://trino.io/docs/current/sql/select.html?highlight=inner+join#joins
+https://javahelps.com/types-of-joins-in-presto-explained
+
+
+select 
+  s.id, 
+  s.name, 
+  s.club_id 
+from playground.students s
+inner join 
+  playground.clubs c on s.club_id = c.id
+
+
+

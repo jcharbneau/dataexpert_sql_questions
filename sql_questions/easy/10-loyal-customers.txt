@@ -1,0 +1,115 @@
+10-Customers with More Than 20 Orders
+ 
+Write a SQL query to display all loyal customers from the playground.superstore table. A customer is considered loyal if they have placed more than 20 orders. The query should return the customer ID, customer name, and the total number of orders for each of these customers. Display the result in descending order of their orders and then ascending order of their names
+
+--
+solution
+--
+
+
+-- SELECT * FROM playground.superstore LIMIT 100
+
+select 
+  customer_id,
+  customer_name,
+  count(order_id) as order_count
+from
+  playground.superstore
+group by 
+  customer_id,
+  customer_name
+having 
+  count(order_id) > 20
+order by
+  order_count desc,
+  customer_name asc
+
+
+
+
+--
+video
+--
+
+
+step 1
+
+ lets start by getting our basic details 
+
+ select
+    customer_id,
+    customer_name,
+    order_id
+from
+    playground.superstore
+
+
+step 2
+    lets zero in on the "a customer is considered loyal" statement
+    it says if they have placed more than 20 orders then we consider them loyal
+    - so we need to first capture a count of orders for each customer (id & name)
+    - note the group by
+
+
+    first thing, lets get the order count
+    select
+        customer_id,
+        customer_name,
+        count(order_id) as order_count
+    from
+        playground.superstore
+    group by
+        customer_id,
+        customer_name
+
+step 3
+    so now we see that we have data, formatted that way we need it and containing a order count
+    grouped by customer id & name - lets go back to our requirement statement
+    "A customer is considered loyal if they have placed more than 20 orders." 
+
+    so now we determine the customers that have greater "more" than 20
+    - note "where" does not allow aggregates
+
+    select
+        customer_id,
+        customer_name,
+        count(order_id) as order_count
+    from
+        playground.superstore
+    group by
+        customer_id,
+        customer_name
+    having count(order_id) > 20
+
+
+step 4
+    ok, so we're looking good but we're missing one final requirement
+    - note hint "Data Mismatch for row 1"
+
+    so our final requirement states:
+     Display the result in descending order of their orders and then ascending order of their names
+
+     lets do that now
+
+
+    select 
+      customer_id,
+      customer_name,
+      count(order_id) as order_count
+    from
+      playground.superstore
+    group by 
+      customer_id,
+      customer_name
+    having 
+      count(order_id) > 20
+    order by
+      order_count desc,
+      customer_name asc
+
+
+
+
+
+
+

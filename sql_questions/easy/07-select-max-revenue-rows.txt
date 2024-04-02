@@ -1,0 +1,126 @@
+07-Select Rows With Maximum Revenue
+ 
+Using the table playground.revenue, write a SQL query to select rows from a given table that have the maximum revenue value for each id. The resultant table should have three columns - "id", "rev", "content". Additionally, the results should be ordered in descending order by revenue.
+
+
+SELECT * FROM playground.revenue LIMIT 100
+
+with maxrevenue as (
+  select 
+    id,
+    max(rev) as max_rev
+  from playground.revenue
+  group by id
+)
+
+select 
+  p.id,
+  p.rev,
+  p.content
+from
+  playground.revenue p
+  inner join maxrevenue m on p.id = m.id and p.rev = m.max_rev
+order by
+  p.rev DESC
+
+
+
+-- video
+ ok, so we're on to the next question in the DataExpert.IO Sql questions challenge.  In this video, I will walk through my process for solving the "Select Rows With Maximum Revenue" question.
+
+- read through
+- source schema
+- target schema
+
+
+step 1
+  so the first thing we need to do is to get the "maximum revenue value for each id"
+  we can do that by selecting our id, and then using the max function to give us the max
+  value for each id
+
+  select
+    id,
+    max(rev) as max_rev
+  from
+    playground.revenue
+  group by id
+
+
+
+step 2
+
+  - so why couldn't we just add content as one of our selection fields?
+    select
+    id,
+    max(rev) as max_rev,
+    content
+  from
+    playground.revenue
+  group by id, content
+
+  - so as we can see here, if we were to query content as well, and then add it to the group by clause,
+    we would end up with the same data as if we just did a basic select
+
+  - to get around this, we can encapsulate the earlier query as a CTE and then perform a join to realign the data and get the correct content items
+
+  so now we need to get our id, rev, and content values to build our results table, but we want to narrow in on our requirement , we can do this by 
+
+  select
+    id,
+    rev,
+    content
+  from 
+    playground.revenue
+
+
+
+step3
+  - ok, so we mentioned joining the data so that we can identify our correct content items
+  - lets do that here by introducing a inner join clause, which will allow us to look at each row from the source table (in our case the playground.revenue table), and find the rows from maxrevenue that are a match.
+
+
+with maxrevenue as (
+  select 
+    id,
+    max(rev) as max_rev
+  from playground.revenue
+  group by id
+)
+
+select 
+  p.id,
+  p.rev,
+  p.content
+from
+  playground.revenue p
+  inner join maxrevenue m on p.id = m.id and p.rev = m.max_rev
+order by
+  p.rev DESC
+
+
+
+
+
+
+  order by
+    rev desc
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

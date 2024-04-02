@@ -1,0 +1,138 @@
+13-Find US Customers Who Rented and Streamed Videos in Early February
+ 
+Write a SQL query to return the US customers who rented a video on February 1st, 2023, and then streamed the same video between February 2nd and February 8th, 2023. Use the tables playground.rental for rental data and playground.streams for streaming data. The output should include unique user IDs of these customers ordered in ascending order.
+
+--
+solution
+--
+
+
+SELECT * FROM playground.rental LIMIT 100
+describe playground.rental
+show create table playground.rental
+
+SELECT * FROM playground.streams LIMIT 100
+describe playground.streams
+show create table playground.streams
+
+-- SELECT * FROM playground.rental LIMIT 100
+
+-- SELECT * FROM playground.streams LIMIT 100
+
+select
+  r.user_id,
+  r.rental_date,
+  s.stream_date,
+  r.country
+from
+  playground.rental r
+inner join playground.streams s on
+  r.rental_id = s.rental_id
+  -- limited dataset, but we need to filter on both
+  --   consider cases where multiple users stream from same rental
+  --
+  and r.user_id = s.user_id
+where
+ -- filter on US country
+  r.country = 'US'
+ -- rental date of 2023-02-01
+ and date(r.rental_date) = date '2023-02-01'
+ -- limited dataset, but per requirement, need to filter on streaming dates between 02/02 and 02/08
+ and date(s.stream_date) between date '2023-02-02' and date '2023-02-08'
+ order by r.user_id asc
+
+
+-- 
+video
+--
+lets take a look at our tables
+
+
+step 1
+ ok, so lets start by getting our users, their rental date, and their country
+ select
+  user_id,
+  rental_date,
+  country
+ from
+  playground.rental
+
+
+step 2
+so looking at our requirements, a couple things stand out
+- we need to filter on the country from the rentals table
+- and we also want to filter on the date
+- but we're missing our stream date from the requirements, so lets 
+  start by including a join - since we want all the rows that match 
+  from both sides that satisfy the join conidition, we'll do a inner join
+
+select
+  r.user_id,
+  r.rental_date,
+  r.country,
+  s.stream_date
+from
+  playground.rental r
+inner join playground.streams s on
+  r.rental_id = s.rental_id
+  
+-***
+  and r.user_id = s.user_id
+
+  -- additional discussion
+  -- limited dataset, but we need to filter on both
+  --   consider cases where multiple users stream from 
+  --   same rental or other similar scenario's
+
+
+
+step 3
+  ok, so now we're getting our data from both tables in the shape we need
+  but, 
+  we're still getting data from multiple countries
+  we're still not filtering by our rental date,
+  and we still need to determine videos that where
+  streamed during our defined window
+
+  lets add those pieces now
+
+  note the use of the date() function, and date literal (which specifies the "type" of the data we're providing)
+
+
+-- SELECT * FROM playground.rental LIMIT 100
+
+-- SELECT * FROM playground.streams LIMIT 100
+
+select
+  r.user_id,
+  r.rental_date,
+  s.stream_date,
+  r.country
+from
+  playground.rental r
+inner join playground.streams s on
+  r.rental_id = s.rental_id
+  and r.user_id = s.user_id
+where
+  r.country = 'US'
+ and date(r.rental_date) = date '2023-02-01'
+ and date(s.stream_date) between date '2023-02-02' and date '2023-02-08'
+
+
+order by r.user_id asc
+
+ -- we can test the filter by changing the end date
+ --
+ --  and date(s.stream_date) between date '2023-02-02' and date '2023-02-04'
+ --
+
+
+
+
+
+
+
+
+
+
+

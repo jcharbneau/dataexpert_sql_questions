@@ -1,0 +1,77 @@
+08-Cars with Above Average Engine Size
+ 
+Using the table playground.automobile, Create a SQL query to identify cars that have an engine size above the average across all cars in the dataset. The result should include the brand, fuel_type, and engine size, ordered by engine size in descending order and then brand_name in asc order.
+
+SELECT * FROM playground.automobile LIMIT 100
+
+describe playground.automobile
+
+show create table playground.automobile
+
+select avg(engine_size) from playground.automobile
+
+select
+  brand_name,
+  fuel_type,
+  engine_size
+from
+  playground.automobile
+where engine_size > (
+  select avg(engine_size) from playground.automobile
+)
+order by
+  engine_size desc,
+  brand_name asc
+
+-- video
+
+step1
+
+select avg(engine_size) from playground.automobile
+
+
+select 
+  brand_name,
+  fuel_type,
+  engine_size
+from
+  playground.automobile
+
+
+step 2
+
+lets combine those
+
+select
+  brand_name,
+  fuel_type,
+  engine_size
+from
+  playground.automobile
+where engine_size > (
+  select avg(engine_size) from playground.automobile
+)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

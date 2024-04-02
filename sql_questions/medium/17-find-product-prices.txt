@@ -1,0 +1,109 @@
+17-*Find Product Prices
+ 
+Using the table playground.product_prices, create a SQL query to find all products and their prices on 2023-08-17, assuming the initial price of all products was 10 before any price changes. Order the results in ascending order of product_id.
+
+
+--
+solution
+--
+
+
+
+-- SELECT * FROM playground.product_prices LIMIT 100
+
+with latestPrices as (
+  select
+    product_id,
+    new_price,
+    change_date,
+    row_number() over (partition by product_id order by change_date desc) as rn
+  from playground.product_prices
+  where change_date <= date '2023-08-17'
+),
+allProducts as (
+  select distinct product_id
+  from playground.product_prices
+)
+
+select
+  ap.product_id,
+  if(lp.new_price is null, 10, lp.new_price) as price
+from allProducts ap
+left join latestPrices lp on ap.product_id = lp.product_id and lp.rn = 1
+order by ap.product_id asc
+
+
+
+
+--
+video
+--
+
+
+step 1
+
+lets start by building a quick query to segment out our latest prices, filtering on the change_date
+
+
+  select
+    product_id,
+    new_price,
+    change_date
+  from playground.product_prices
+  where change_date <= date '2023-08-17'
+
+
+
+step 2
+so lets enhance this a bit - we can convert this query into a cte, and as a next step get all products into a separate cte
+
+with latest_prices as (
+  select
+    product_id,
+    new_price,
+    change_date
+  from playground.product_prices
+  where change_date <= date '2023-08-17'
+),
+all_products as (
+  select distinct product_id
+  from playground.product_prices
+)
+
+-- cartesian / cross join
+-- select * from latest_prices, all_products
+For each row in latest_prices, it combines with every row in all_products. If latest_prices has N rows and all_products has M rows, the result will have N * M rows. 
+
+step 3
+now that we have our latest prices and all products, we need to join
+the two together to get us closer to answering the question: 
+"what are the products and their prices on 08/17"
+
+with latest_prices as (
+  select
+    product_id,
+    new_price,
+    change_date,
+    row_number() over (partition by product_id order by change_date desc) as rn
+  from playground.product_prices
+  where change_date <= date '2023-08-17'
+),
+all_products as (
+  select distinct product_id
+  from playground.product_prices
+)
+
+select
+  ap.product_id,
+  if(lp.new_price is null, 10, lp.new_price) as price
+from all_products ap
+left join latest_prices lp 
+  on ap.product_id = lp.product_id 
+  and lp.rn = 1
+order by ap.product_id asc
+
+Trino / SQL and IF
+https://trino.io/docs/current/functions/conditional.html#if
+
+
+step 4

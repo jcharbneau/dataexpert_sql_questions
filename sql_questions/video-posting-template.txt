@@ -1,0 +1,31 @@
+Video Posting Templates
+
+
+
+LI:
+--
+Solving the "<question>" DataExpert.io SQL Question!
+
+My explainer video walk-thru:
+
+<question>:
+<question_link>
+
+
+Thanks to Zach Wilson and team for the questions!
+--
+
+
+
+YouTube:
+--
+Title: <question> - DataExpert.io - SQL - <difficulty>
+
+Description:
+A quick explainer video demonstrating my thoughts on solving the SQL Question "<question>"  found on Zach Wilson's DataExpert.io training site, using Trino's dialect of SQL against Apache Iceberg formatted tables in a S3 Data Lake.
+
+<question_link>
+
+  @EcZachly_   
+
+--

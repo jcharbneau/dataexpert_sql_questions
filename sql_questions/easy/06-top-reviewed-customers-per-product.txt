@@ -1,0 +1,107 @@
+06-Top Reviewed Customers per Product
+ 
+Using the table playground.product_reviews, write a SQL query to identify, for each product, the customer who provided the highest review score. If there are ties in review score, the customer with the most helpful votes should be considered top. The output should include columns for product_id, customer_id, review_score, and helpful_votes, capturing the details of the top review for each product ordered in ascending order of product_id
+
+
+SELECT * FROM playground.product_reviews LIMIT 100
+
+
+-- get the ranked reviews
+with rankedreviews as(
+  select
+    product_id,
+    customer_id,
+    review_score,
+    helpful_votes,
+    RANK() OVER (partition by product_id order by review_score desc, helpful_votes desc) as rank
+  from playground.product_reviews
+)
+-- 
+select 
+  product_id,
+  customer_id,
+  review_score,
+  helpful_votes
+from rankedreviews
+where rank = 1
+order by product_id asc
+
+
+-- video 
+
+step 1
+  get a list of the product_id, customer_id, review_score and helpful votes
+  select
+    product_id,
+    customer_id,
+    review_score,
+    helpful_votes
+  from
+    playground.product_reviews
+
+
+step 2
+  lets use the rank function (trino) to get ranking of each product by review_score & helpful_votes
+  note we're getting the ranking in descending order (so highest value on top), and we're also partitioning
+  by the product_id which allows us to first group the records by the product, then apply the ranking to each 
+  group in turn
+
+  select
+    product_id,
+    customer_id,
+    review_score,
+    helpful_votes,
+    RANK() OVER (partition by product_id order by review_score desc, helpful_votes desc) as rank
+  from playground.product_reviews
+
+
+step 3
+  convert our previous query into a common table expression (cte) using the "with" keyword
+
+  with rankedreviews as(
+    select
+      product_id,
+      customer_id,
+      review_score,
+      helpful_votes,
+      RANK() OVER (partition by product_id order by review_score desc, helpful_votes desc) as rank
+    from playground.product_reviews
+  )
+
+  select * from rankedreviews
+
+
+step 4
+  lets finish this query off, by querying our new rankedreviews "table" for the records that match our requirement of "the top review for each product ordered, in ascending order of product_id", or in other
+  words "the record for each product where the rank is 1"
+
+  -- get the ranked reviews
+  with rankedreviews as(
+    select
+      product_id,
+      customer_id,
+      review_score,
+      helpful_votes,
+      RANK() OVER (partition by product_id order by review_score desc, helpful_votes desc) as rank
+    from playground.product_reviews
+  )
+  -- 
+  select 
+    product_id,
+    customer_id,
+    review_score,
+    helpful_votes
+  from rankedreviews
+  where rank = 1
+  order by product_id asc
+
+
+
+
+
+
+
+
+
+
+

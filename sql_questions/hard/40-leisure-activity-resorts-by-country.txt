@@ -1,0 +1,48 @@
+40-***Summarizing Leisure Activity Resorts by Country
+ 
+Given a table playground.country_activities with columns: id (unique identifier), country (name of the country), region (region within the country), leisure_activity_type (type of leisure activity), and number_of_places (number of resorts offering the activity). Construct a SQL query to aggregate this information into a new table structure. The resulting table should have columns for each country, with the counts of resorts offering each type of activity: adventure_park, golf, river_cruise, and kart_racing. Sort the result by country name in ascending order.
+These are the tables to query for this question:
+
+playground.country_activities
+id int
+country string
+region string
+leisure_activity_type string
+number_of_places int
+
+Your answer should include these columns:
+country varchar
+adventure_park integer
+golf integer
+river_cruise integer
+kart_racing integer
+
+--
+solution
+--
+
+-- SELECT * FROM playground.country_activities LIMIT 100
+
+select
+  country,
+  sum(case when leisure_activity_type = 'Adventure park' then number_of_places else 0 end) as adventure_park,
+  sum(case when leisure_activity_type = 'Golf' then number_of_places else 0 end) as golf, 
+  sum(case when leisure_activity_type = 'River cruise' then number_of_places else 0 end) as river_cruise, 
+  sum(case when leisure_activity_type = 'Kart racing' then number_of_places else 0 end) as kart_racing
+  
+from
+  playground.country_activities
+
+group by
+  country
+order by
+  country asc
+  
+
+
+--
+video
+--
+
+
+step 1

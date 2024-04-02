@@ -1,0 +1,46 @@
+22-*Finding Actors by Favorite Movie Genre
+ 
+Given three tables - playground.movies, playground.starring_actors, and playground.actor_ages - identify actors from the most common movie genre in your library. Assume each actor is listed once representing their best role. The task is to list actors with their age, sorted from oldest to youngest, who star in movies of your favorite genre (the most common genre in your list). In case of actors being the same age, sort them by name.The resultant table should have two columns, actor and age.
+
+
+-- SELECT * FROM playground.movies LIMIT 100
+-- SELECT * FROM playground.starring_actors LIMIT 100
+-- SELECT * FROM playground.actor_ages LIMIT 100
+
+-- find our favorite genre
+-- make it a cte
+with most_common_genre as (
+  select genre 
+  from playground.movies
+  group by genre
+  order by count(*) desc
+  limit 1
+),
+-- get the actors from our most common genre (aka fav)
+actors_in_favorite_genre as (
+  select sa.actor
+  from playground.starring_actors sa
+  join playground.movies m on sa.movie_name = m.movie
+  where m.genre = (select genre from most_common_genre)
+),
+-- get the ages of the actors
+actor_ages as (
+  select 
+    aa.actor,
+    aa.age
+  from playground.actor_ages aa
+  -- join from above
+  join actors_in_favorite_genre afg on afg.actor = aa.actor
+  
+)
+
+-- select * from ActorsInFavGenre
+-- select * from ActorAges
+-- The task is to list actors with their age, sorted from oldest to youngest
+select
+  aa.actor,
+  aa.age
+from actor_ages aa
+order by aa.age desc, aa.actor
+
+

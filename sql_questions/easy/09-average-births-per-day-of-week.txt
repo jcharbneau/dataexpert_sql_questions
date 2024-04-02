@@ -1,0 +1,42 @@
+09-Average Number of Births by Day of the Week
+ 
+Create a SQL query that finds the average number of births for each day of the week across all years in the playground.us_birth_stats table. Cast the average as an integer. Order the results by the day of the week.
+
+SELECT * FROM playground.us_birth_stats LIMIT 100
+
+select day_of_week, cast(avg(births) as integer) as average_births
+from playground.us_birth_stats
+group by day_of_week
+order by day_of_week
+
+-- video
+
+step1
+select 
+	day_of_week,
+	births
+from 
+	playground.us_birth_stats
+
+
+
+step 2
+
+select 
+	day_of_week,
+	avg(births) as average_births
+
+from
+	playground.us_birth_stats
+
+group by day_of_week
+
+
+step 3
+select 
+	day_of_week, 
+	cast(avg(births) as integer) as average_births
+from 
+	playground.us_birth_stats
+group by day_of_week
+order by day_of_week

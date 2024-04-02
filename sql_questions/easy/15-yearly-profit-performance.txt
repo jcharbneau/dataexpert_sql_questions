@@ -1,0 +1,96 @@
+15-*Analyze Yearly Profit Performance
+ 
+Write a SQL query to analyze the profit performance of the company throughout the years using the playground.superstore table. Ensure to convert profit from varchar to a suitable numeric type for aggregation. The output should include the year extracted from the order_date, the total annual profit (total_profit) rounded to two decimal places, and should be ordered by year in descending order.
+
+--
+solution
+--
+
+SELECT * FROM playground.superstore LIMIT 100
+
+show create table playground.superstore
+describe playground.superstore
+
+
+select 
+    extract(year from order_date) as order_year,
+    round(
+      sum(
+        cast(profit as decimal(10,2))
+      ),
+      2
+    ) as total_profit
+from playground.superstore
+group by 
+    extract(year from order_date)
+order by
+  order_year desc  
+
+
+--
+video
+--
+so lets start by taking a look at the data
+
+step 1
+ok, we can begin by querying just the data we need
+
+select
+  order_date,
+  profit
+from
+  playground.superstore
+
+
+step 2
+so we can see that we have a mixture of negative, positive values and that
+some of them use a decimal, some of them do not, and others only have one 
+digit to the right of the period  - lets correct that issue
+select
+  order_date,
+  cast(profit as decimal(10,2))
+  
+from
+  playground.superstore
+
+next, we know that we are being asked to calculate the total profit by year
+we can achieve this by extracting the year value from the order date, and also 
+introducing a sum function to get our total profit, but then als
+
+select 
+    extract(year from order_date) as order_year,
+    sum(
+        cast(profit as decimal(10,2))
+    ) as total_profit
+from playground.superstore
+
+-- generates error due to missing group by
+
+select 
+    extract(year from order_date) as order_year,
+    sum(
+        cast(profit as decimal(10,2))
+    ) as total_profit
+from playground.superstore
+group by 
+  extract(year from order_date)
+
+  
+step 3
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

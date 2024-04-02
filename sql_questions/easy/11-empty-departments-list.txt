@@ -1,0 +1,74 @@
+11-Identifying Empty Departments
+ 
+Given two tables, playground.employees and playground.departments, with employees containing id, full_name, and department, and departments containing id (unique department ID) and dep_name (department name), write a SQL query to build a table with one column, dep_name. This table should list all the departments that currently have no employees, sorted by the department id.
+
+These are the tables to query for this question:
+
+playground.employees
+id int
+full_name string
+department int
+
+playground.departments
+id int
+dep_name string
+
+Your answer should include these columns:
+dep_name varchar
+
+
+--
+solution
+--
+SELECT * FROM playground.employees LIMIT 100
+
+select * from playground.departments LIMIT 100
+
+select departments.dep_name
+from playground.departments
+left join playground.employees on departments.id = employees.department
+where employees.id is null
+order by departments.id
+
+
+
+
+--
+video
+--
+
+
+step 1
+	lets start by just grabbing the department name to begin with,
+	select
+		dep_name
+	from
+		playground.departments
+
+
+step 2
+	ok, so now we have our department names, and we need to filter out the departments that 
+	have employees - we can do this with a join, specifically a left join
+
+	"left joins will return all rows from the left table, and the matched rows from teh right table"
+	- if no match found, null values will be filled in to the non-matching results on the left table 
+
+
+	select 
+		d.dep_name
+	from
+		playground.departments d
+	left join playground.employees e on d.id = e.department
+
+	illustration of the join:
+		select 
+			d.dep_name,
+			e.full_name
+		from
+			playground.departments d
+		left join playground.employees e on d.id = e.department
+
+step 3
+	so we see the null coming in fromt the left join - this is our key
+	for the final piece of the puzzle, we can use that null to identify 
+	the department with no employees 

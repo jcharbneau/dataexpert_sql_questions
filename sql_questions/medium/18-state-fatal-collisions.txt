@@ -1,0 +1,41 @@
+18-*Comparing State Fatal Collisions to the National Average
+ 
+Using playground.bad_drivers, write a SQL query to compare each state’s fatal collisions per billion miles to the national average. Include a column that indicates whether the state is "Above Average" or "Below Average". The resultant table should have three columns, "state", "fatal_collisions_per_billion_miles" and "comparison_to_national_avg". Show the result ordered by state name asc.
+
+--
+solution
+--
+
+SELECT * FROM playground.bad_drivers LIMIT 100
+
+show create table playground.bad_drivers
+
+with national_average as (
+  select avg(fatal_collisions_per_billion_miles) as avg_fatal_collisions
+  from playground.bad_drivers
+)
+
+select
+  state,
+  fatal_collisions_per_billion_miles
+  case
+    when fatal_collisions_per_billion_miles > (select avg_fatal_collisions from national_average) then 'Above Average'
+    else 'Below Average'
+  end as comparison_to_national_avg
+from playground.bad_drivers
+order by state asc
+
+
+
+--
+video
+--
+
+
+step 1
+
+
+step 2
+
+
+step 3

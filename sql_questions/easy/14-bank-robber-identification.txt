@@ -1,0 +1,129 @@
+14-Identifying the Bank Robber
+Using table playground.suspect, filter out suspects who cannot be the bank robber based on the following clues: the robber is not taller than 170cm, and their name matches the pattern "B. Gre?n" where the first letter of the name is "B" or "b" and the surname is similar to "Green" but with the fourth letter being unreadable and potentially any character. The match should be case-insensitive. For each suspect that fits these criteria, select their id, name, and surname. Order the results by suspect id in ascending order.
+
+
+SELECT * FROM playground.suspect LIMIT 
+
+--
+solution
+--
+ select 
+  id, 
+  name, 
+  surname
+from playground.suspect
+where height <= 170
+and REGEXP_LIKE(
+    concat(name, ' ', surname), 
+    '(?i)^B.*Gre.n$'
+  )
+order by id asc
+
+
+
+
+--
+video
+--
+lets take a look at the data
+
+step 1
+lets get our basic dataset
+
+select 
+    id,
+    name,
+    surname
+from
+    playground.suspect
+
+
+step 2
+so we can see from our requirements that we know that the suspect is not taller than 170cm, lets factor that in
+
+select
+    id,
+    name,
+    surname
+from
+    playground.suspects
+where
+    height <= 170
+
+step 3
+so we see our results, lets discuss the last filter
+we need to match the "B* Gre?n" values provided in our clue
+one way we can achieve this is to use a regular expression, using the regexp_like function call
+so lets break this down a little bit:
+
+we know that the string needs to begin with either a "b" or a "B"
+we know that the surname needs to end with a 'n' value
+we know that the fourth letter of the surname is unknown
+
+so we can approach the matching this way
+
+we need to ignore case for the "B" in the first name
+
+(?i)
+
+we can add the caret to match the beginning
+(?i)^B
+
+we can add a .* for a greedy match (which means match until the next value in the pattern, or "G" for us)
+(?i)^B.*G
+
+we'll go ahead and add our "re" and specify a . for a "match any character" to account for the missing/corrupt fourth character in the "Gre?n" value
+
+(?i)^B.*Gre.
+
+and finally we'll add in our 'n' and also specify a $ to indicate the end of the pattern
+'(?i)^B.*Gre.n$'
+
+
+step4
+ok, so lets pull that altogether now
+
+we know that we need to compare our regex against both the name and the surname, so that implies we concat those values together - we'll encapsulate that concat with a regex_like call and pass in our pattern we wish to match
+
+
+ select 
+  id, 
+  name, 
+  surname
+from playground.suspect
+where height <= 170
+and regexp_like(
+    concat(name, ' ', surname), 
+    '(?i)^B.*Gre.n$'
+  )
+
+step5
+
+finally we'll add our sort
+
+ select 
+  id, 
+  name, 
+  surname
+from playground.suspect
+where height <= 170
+and REGEXP_LIKE(
+    concat(name, ' ', surname), 
+    '(?i)^B.*Gre.n$'
+  )
+order by id asc
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,53 @@
+50-***Who are the top 10 NBA players by consecutive 20+ point seasons?
+ 
+Using the table bootcamp.nba_player_seasons, find the most consecutive seasons a player has scored 20+ points and find the top 10 players! Make sure to handle ties correctly (you might have more than 10 records!). Sort the output data set by consecutive_seasons descending and player_name ascending!
+
+These are the tables to query for this question:
+
+bootcamp.nba_player_seasons
+player_name string
+age int
+height string
+weight int
+college string
+country string
+draft_year string
+draft_round string
+draft_number string
+gp double
+pts double
+reb double
+ast double
+netrtg double
+oreb_pct double
+dreb_pct double
+usg_pct double
+ts_pct double
+ast_pct double
+season int
+
+Your answer should include these columns:
+player_name varchar
+consecutive_seasons integer
+
+
+--
+solution
+--
+
+
+
+
+
+--
+video
+--
+
+
+step 1
+
+
+step 2
+
+
+step 3

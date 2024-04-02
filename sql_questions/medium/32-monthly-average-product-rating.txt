@@ -1,0 +1,40 @@
+32-*Calculate Monthly Average Product Rating
+ 
+Using the table playground.product_reviews, write a SQL query to calculate the monthly average rating for each product. The resulting table should have three columns: month, product_id, and avg_review, where avg_review is the average review rating of the product for that month. The results should be ordered in ascending order of month and product_id
+
+These are the tables to query for this question:
+
+playground.product_reviews
+seller_id int
+customer_id int
+product_id int
+review_date date
+review_score double
+helpful_votes int
+
+Your answer should include these columns:
+month integer
+product_id integer
+avg_review double
+
+
+--
+solution
+--
+
+
+
+
+
+--
+video
+--
+
+
+step 1
+
+
+step 2
+
+
+step 3

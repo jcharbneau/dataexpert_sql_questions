@@ -1,0 +1,30 @@
+04-Determining the Order of Succession
+ 
+Given a table Successors with columns: name, birthday, and gender, write a SQL query to list the names of the King's children in order of their succession to the throne and their birthday("name", "birthday"). Succession is based on age seniority. Prefix the name with "King" for males and "Queen" for females. The result should be sorted by birthday in ascending order to determine the succession order.
+
+SELECT * FROM playground.successors LIMIT 100
+
+select
+  case 
+    when gender = 'M' then 'King ' || name
+    when gender = 'F' then 'Queen ' || name
+  end as name,
+  birthday
+from playground.successors
+order by birthday asc
+
+
+step 1
+  lets get our name and birthday columns
+  select
+    name,
+    birthday
+  from 
+    playground.successors
+
+
+step 2
+  - note "Succession"
+  - note "Prefix the name"
+
+  

@@ -1,0 +1,13 @@
+46-***Determining the Soccer Series Winner
+ 
+From the "scores" table, write a SQL query to determine the series winner based on the following criteria: 1) The team with the most game wins is the winner. 2) If the wins are equal, the team with the better overall goal difference (goals scored - goals conceded) wins. 3) If goal differences are also equal, the winner is the team with more goals scored in away games (when not the host). The "scores" table includes match_id (unique match ID), first_team_score, second_team_score, and match_host (1 or 2, indicating the host team). Return a table with a single column "winner" that contains 1 (for the first team), 2 (for the second team), or 0 if no winner is determined based on these criteria.
+
+These are the tables to query for this question:
+playground.scores
+match_id int
+first_team_score int
+second_team_score int
+match_host int
+
+Your answer should include these columns:
+winner integer

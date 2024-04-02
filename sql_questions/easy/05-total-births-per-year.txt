@@ -1,0 +1,35 @@
+05-Total Number of Births Per Year
+ 
+Write a SQL query to calculate the total number of births recorded for each year in the playground.us_birth_stats table. Order the results by year.
+
+SELECT * FROM playground.us_birth_stats LIMIT 100
+
+select year, sum(births) as total_births
+from playground.us_birth_stats
+group by year
+order by year
+
+
+
+-- video
+
+
+step 1
+  query the year and births
+
+  select 
+  	year,
+  	births
+  from playground.us_birth_stats
+
+
+step 2
+  aggregate (sum) the births as total_birth_status
+  group the aggregation by year
+
+
+step 3
+  sort/order the results by year, defaults to ascending
+
+
+  

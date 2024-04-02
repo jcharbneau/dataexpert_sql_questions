@@ -1,0 +1,45 @@
+44-***Check Second Sale Brand Preference Match
+ 
+Using the tables playground.users, playground.items, and playground.orders, write a SQL query to determine for each user, whether the brand of the second item they sold matches their preferred brand. The output should include two columns: seller_id and has_pref_brand, where has_pref_brand is "yes" if the brand of the second item sold matches the users preferred brand, and "no" otherwise. If a user sold less than two items, report the answer for that user as "no". It is guaranteed that no seller sold more than one item on the same day. The result should be ordered by user_id in ascending order.
+
+These are the tables to query for this question:
+
+playground.users
+user_id int
+join_date date
+preferred_brand string
+
+playground.items
+item_id int
+item_brand string
+
+playground.orders
+order_id int
+order_date date
+item_id int
+buyer_id int
+seller_id int
+
+Your answer should include these columns:
+seller_id integer
+has_pref_brand varchar
+--
+solution
+--
+
+
+
+
+
+--
+video
+--
+
+
+step 1
+
+
+step 2
+
+
+step 3

@@ -1,0 +1,153 @@
+19-Identifying students with the best grade
+ 
+Using the playground.marks table, write a SQL query to determine the students who achieved the highest marks when graded according to Option 3, where the final exam accounts for 100% of the grade. The other grading options are provided for context: Option 1: Midterm 1 contributes 25%, Midterm 2 contributes 25%, and the Final exam contributes 50% of the grade. Option 2: Midterm 1 contributes 50% and Midterm 2 contributes 50% of the grade. Option 3: The Final exam contributes 100% of the grade. The output should be sorted by the students' names in ascending order. Ensure the column names in the result are displayed in lowercase. The resultant table should have two columns, name and their id.
+These are the tables to query for this question:
+
+playground.marks
+Name string
+ID int
+Midterm1 int
+Midterm2 int
+Final int
+
+Your answer should include these columns:
+name varchar
+id integer
+
+
+--
+solution
+--
+
+WITH calculated_grades AS (
+    SELECT 
+        name, 
+        id, 
+        midterm1, 
+        midterm2, 
+        final, 
+        (midterm1 * 0.25 + midterm2 * 0.25 + final * 0.5) AS grade_option1,
+        (midterm1 * 0.5 + midterm2 * 0.5) AS grade_option2,
+        final AS grade_option3 -- optional
+    FROM academy.playground.marks
+)
+SELECT 
+    name, 
+    id, 
+    grade_option1, 
+    grade_option2, 
+    grade_option3
+FROM calculated_grades
+WHERE grade_option3 > grade_option1 AND grade_option3 > grade_option2
+ORDER BY name ASC;
+
+
+
+
+
+--
+video
+--
+
+
+step 1
+ok, so lets take a look at getting the initial data we need to review - we'll start by querying name, id, midterm1, midterm2 and final
+
+    select 
+        name, 
+        id, 
+        midterm1, 
+        midterm2, 
+        final
+    from academy.playground.marks
+
+step 2
+	ok, so lets drill into the requirement we want to identify the students with the highest marks when graded with option 3 (final = 100% of grade) - in order to do that, we first need to understand the scores for all options.
+
+	lets step through this:
+	Option 1: Midterm 1 contributes 25%, Midterm 2 contributes 25%, and the Final exam contributes 50% of the grade.
+	or: 
+		midterm1 * 0.25 + midterm2 * 0.25 + final * 0.5
+
+	Option 2: Midterm 1 contributes 50% and Midterm 2 contributes 50% of the grade.
+	or:
+		midterm1 * 0.5 + midterm2 * 0.5
+
+	Option 3: The Final exam contributes 100% of the grade.
+	or:
+		final 
+
+	  select 
+        name, 
+        id, 
+        midterm1, 
+        midterm2, 
+        final,
+        (midterm1 * 0.25 + midterm2 * 0.25 + final * 0.5) AS grade_option1,
+        (midterm1 * 0.5 + midterm2 * 0.5) AS grade_option2,
+        final AS grade_option3 -- optional
+    from academy.playground.marks
+
+step 3
+	ok, so now we're getting our various grade options, lets step that out
+
+	with calculated_grades as (
+	  select 
+        name, 
+        id, 
+        midterm1, 
+        midterm2, 
+        final,
+        (midterm1 * 0.25 + midterm2 * 0.25 + final * 0.5) AS grade_option1,
+        (midterm1 * 0.5 + midterm2 * 0.5) AS grade_option2,
+        final AS grade_option3 -- optional
+      from academy.playground.marks
+	)
+
+	select * from calculated_grades
+
+
+step 4
+	finally, lets retrieve the data from the calculated_graphs cte and perform our conditionals, 
+	lets make sure to sort by the students name in ascending order
+
+
+	with calculated_grades as (
+	  select 
+        name, 
+        id, 
+        midterm1, 
+        midterm2, 
+        final,
+        (midterm1 * 0.25 + midterm2 * 0.25 + final * 0.5) AS grade_option1,
+        (midterm1 * 0.5 + midterm2 * 0.5) AS grade_option2,
+        final AS grade_option3 -- optional
+      from academy.playground.marks
+	)
+
+	select
+		name,
+		id,
+		grade_option1,
+		grade_option2,
+		grade_option3
+	from
+		calculated_grades
+	where
+		grade_option3 > grade_option1
+		and grade_option3 > grade_option2
+	order by
+		name asc
+
+
+
+
+
+
+
+
+
+
+
+
+

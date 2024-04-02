@@ -1,0 +1,81 @@
+02-Check Test Answers
+ 
+Create a SQL query to evaluate test answers stored in a table named playground.answers with columns id (unique question ID), correct_answer (string), and given_answer (which can be NULL). Return a table with columns id and checks, where checks is "no answer" if given_answer is NULL, "correct" if given_answer matches correct_answer, and "incorrect" otherwise. Order the results by id.
+
+These are the tables to query for this question:
+
+playground.answers
+id int
+correct_answer string
+given_answer string
+
+Your answer should include these columns:
+id integer
+checks varchar
+
+
+
+select 
+  id,
+  case
+    when given_answer is null then 'no answer'
+    when given_answer = correct_answer then 'correct'
+    else 'incorrect'
+  end as checks
+from
+  playground.answers
+order by id
+
+
+
+
+step 1
+  
+  in this case, we need to identify the questions and whether the given_answers were correct or not, we do this by
+  returning 'no answer', 'correct', or 'incorrect' as part of our "checks" return column
+
+  lets start by getting our id's
+  select id from playground.answers
+
+
+step 2
+  lets introduce a case statement - this will allow us to return the appropriate values using a comparison operator
+  to test the state of the given_answer column (row by row)
+
+  select 
+  	id,
+  	case
+  		when given_answer is null then 'no answer'
+
+  	end as checks
+  from 
+  	playground.answers
+
+
+  lets augment our case statement a little further by incorporating another check and an else statement
+  when given_answer is null, we return 'no answer'
+  when given_ansewer is equal to correct_answer then we return 'correct'
+  otherwise, we return 'incorrect'
+  
+  select
+  	id,
+  	case
+  		when given_answer is null then 'no answer'
+  		when given_answer = correct_answer then 'correct'
+		else 'incorrect'
+	end as checks
+  from playground.answers
+
+
+
+step 4
+  lets not forget our sort order
+  select
+  	id,
+  	case
+  		when given_answer is null then 'no answer'
+  		when given_answer = correct_answer then 'correct'
+		else 'incorrect'
+	end as checks
+  from playground.answers
+  order by id asc

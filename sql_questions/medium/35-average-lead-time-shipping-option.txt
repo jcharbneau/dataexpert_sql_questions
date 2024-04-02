@@ -1,0 +1,94 @@
+35-*Calculate Average Lead Time for Each Shipping Option
+ 
+Using the playground.superstore table, write a SQL query to calculate the average lead time from order to shipping for each shipping option. The lead time is defined as the number of days from the order date to the ship date. Additionally, count the total number of shipping services provided for each shipping option. The output should include the shipping mode (ship_mode), the total count of shipping services (total_shipping_service), and the average lead time (avg_lead_time), rounded to two decimal places. Order the results by shipping mode in descending order.
+
+
+SELECT * FROM playground.superstore LIMIT 100
+
+select
+  ship_mode,
+  count(*) as total_shipping_service,
+  round(avg(date_diff('day', order_date, ship_date)), 2) as avg_lead_time
+from
+  playground.superstore
+group by
+  ship_mode
+order by
+  ship_mode desc
+
+
+  step 1
+  	ok, so lets break this problem down into more digestable chunks
+  	- the first thing we see is "calculate the average lead time from order date to ship date" - there's another hint in that we want to "count the total number of shipping services for each shipping option"
+
+  	- so by thinking "calulate the average lead time", we know that we will need to use our avg() function, we know that we will perform a calculation against order date and ship date, in our case we want to average the difference between the two dates, or a "date_diff"
+  	- with the second portion of the hint, we are told to "count the total number of shipping services for each shipping option"
+
+  	so lets start simply:
+
+  	select
+  		ship_mode,
+  		order_date,
+  		ship_date
+	from
+		playground.superstore
+
+
+
+
+  step 2
+  	ok, so now that we have some idea of the data we're working with, lets add a new field that is a total count of all records, grouped by the ship_mode
+
+  	select
+  		ship_mode,
+  		count(*) as total_shipping_service,
+  		order_date,
+  		ship_date
+	from
+		playground.superstore
+	group by
+		ship_mode  -- ,order_date, ship_date
+
+
+  step 3
+  	so now we are getting closer - we know that grouping by order_date and ship_date is not what we want; so lets remove those
+  	we can also condense and get our date_diff between order_date and ship_date; keeping in mind that per the requirements, we're looking for the avg
+
+	select
+	  ship_mode,
+	  count(*) as total_shipping_service,
+	  avg(date_diff('day', order_date, ship_date)) as avg_lead_time
+	from
+	  playground.superstore
+	group by
+	  ship_mode
+
+
+
+  step 4
+  	ok, so we can see our lead time values are very long, and per requirement we need to round that average to 2 decimal places, we were also requested to sort the data by teh ship_mode in desc order so we'll take care of that as well
+
+  	select
+	  ship_mode,
+	  count(*) as total_shipping_service,
+	  round(avg(date_diff('day', order_date, ship_date)), 2) as avg_lead_time
+	from
+	  playground.superstore
+	group by
+	  ship_mode
+	order by
+	  ship_mode desc
+
+
+
+
+
+
+
+
+
+
+
+
+
+

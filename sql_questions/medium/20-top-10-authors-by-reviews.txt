@@ -1,0 +1,29 @@
+20-*Who are the top 10 authors by number of reviews?
+ 
+Using bootcamp.books, find the top 10 authors by reviews, no_of_reviews is a string column with bad data, try your best to get the values to parse correctly
+
+
+SELECT * FROM bootcamp.books LIMIT 100
+
+select no_of_reviews from bootcamp.books
+
+-- filter out bad data first, noticed "Black" in there (its a varchar, but shoudl be numerical data)
+
+
+select REGEXP_REPLACE(no_of_reviews, '\\D', '') from bootcamp.books
+
+select author,
+  sum(cast(regexp_replace(no_of_reviews, '\\D', '') as integer)) as total_reviews
+from bootcamp.books
+where
+regexp_like(no_of_reviews, '^[0-9,]+$')
+GROUP by author
+order by total_reviews desc
+
+
+select author,
+  sum(coalesce(try_cast(regexp_replace(no_of_reviews, '[^\d]+', '') as integer), 0)) as number_of_reviews
+from bootcamp.books
+group by author
+order by number_of_reviews desc
+limit 10

@@ -1,0 +1,42 @@
+27-*Calculate 3-Day Rolling Average of Posts per User
+ 
+Using the table playground.posts, write a SQL query to calculate the 3-day rolling average of posts for each user. The output should include columns: user_id, post_date, and third_rolling_avg, where third_rolling_avg is the 3-day rolling average of post count for each user, rounded to 2 decimal places. The rolling average should be calculated over a specified 3-day period for each user, including the current day and the two preceding days. The result should be ordered in ascending order of post date
+
+-- SELECT * FROM playground.posts LIMIT 100
+
+select 
+  user_id,
+  post_date,
+  -- post_count,
+  round(avg(post_count) over(
+    partition by user_id
+    order by post_date
+    rows between 2 preceding and current row
+  ),2) as third_rolling_avg
+from
+  playground.posts
+order by 
+  user_id asc,
+  post_date asc
+  
+
+  --
+solution
+--
+
+
+
+
+
+--
+video
+--
+
+
+step 1
+
+
+step 2
+
+
+step 3

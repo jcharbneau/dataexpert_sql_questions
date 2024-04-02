@@ -1,0 +1,31 @@
+30-*Which states have high risk of fatal collisions involving Alcohol
+ 
+Using playground.bad_drivers, determine the states and their percentage of alcohol impaired collisions where the risk of fatal collisions involving alcohol is significantly higher than the national average. Consider a state as high-risk if its percent_alcohol_impaired is at least 20% higher than the national average. Show the output in descending order of the percent_alcohol_impaired.
+
+
+SELECT * FROM playground.bad_drivers LIMIT 100
+
+-- show create table playground.bad_drivers
+
+-- calculate national avg
+-- id states where alcohol impaired is 20% higher than national avg
+-- output a list of states and their percent alcohol impaire in desc order
+
+with NationalAverage AS (
+  select 
+    avg(percent_alcohol_impaired) as avg_percent_alcohol_impaired 
+  from 
+    playground.bad_drivers
+)
+
+select 
+  state, 
+  percent_alcohol_impaired
+from 
+  playground.bad_drivers, 
+  NationalAverage
+where 
+  percent_alcohol_impaired >= 1.2 * avg_percent_alcohol_impaired
+order by 
+  percent_alcohol_impaired desc
+  

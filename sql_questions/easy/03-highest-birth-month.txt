@@ -1,0 +1,48 @@
+03-Month with the Highest Total Births
+
+
+Determine the month with the highest total number of births in the playground.us_birth_stats table. The output should show the month and the total number of births.
+These are the tables for this question:
+
+SELECT * FROM playground.us_birth_stats LIMIT 100
+
+describe playground.us_birth_stats
+
+select month, sum(births) as total_births
+from playground.us_birth_stats
+group by month
+order by total_births desc
+limit 1
+
+
+
+-- video --
+
+step 1
+  query for each month and births
+
+  select 
+  	month,
+  	births
+  from
+  	playground.us_birth_stats
+
+
+step 2
+ next, lets also sum all births that match that month into a new column called total_births, note as we're using
+ a sum() aggregation, we'll also need to include a group by (month)
+
+   select 
+  	month,
+  	sum(births) as total_births
+  from
+  	playground.us_birth_stats
+
+  group by
+  	month
+
+
+step 3
+  lets clean it up a little further and make sure we return in the proper order as requested
+
+

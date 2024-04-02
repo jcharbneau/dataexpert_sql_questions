@@ -1,0 +1,296 @@
+37-***Identify Department for Reduction
+ 
+Select departments that have no more than 5 employees. From these, choose departments based on the descending order of the total salary of its employees. In case of a tie in total salary, prioritize the department with the greater number of employees. If still tied, prioritize by the smallest department id. From the resulting list, eliminate departments in even positions, leaving only those in odd positions for further consideration. The resulting table should contain columns for department name, number of employees, and total salary, sorted as described.
+
+These are the tables to query for this question:
+playground.dept
+id int
+name string
+playground.emp
+id int
+full_name string
+salary int
+department int
+
+Your answer should include these columns:
+dep_name varchar
+emp_number integer
+total_salary integer
+
+---
+solution
+---
+-- select * from playground.dept
+-- select * from playground.emp
+
+-- Select departments that have no more than 5 employees.
+with dept_stats as (
+  select 
+    d.name as dep_name,
+    count(e.id) as emp_number,
+    sum(e.salary) as total_salary,
+    d.id as department_id
+  from
+    playground.dept d
+    join playground.emp e on d.id = e.department
+  
+  group by
+    d.id, d.name
+  having count(e.id) <= 5
+),
+/*
+From these, choose departments based on the descending order of the total salary of its employees. In case of a tie in total salary, prioritize the department with the greater number of employees. If still tied, prioritize by the smallest department id. 
+*/
+ranked_departments as (
+  select
+    dep_name,
+    total_salary,
+    emp_number,
+    department_id,
+    row_number() over (
+      order by total_salary desc, 
+      emp_number desc,
+      department_id asc
+    ) as rank
+  from
+    dept_stats
+),
+/* 
+From the resulting list, eliminate departments in even positions, leaving only those in odd positions for further consideration
+*/
+odd_ranked_departments as (
+  select 
+    dep_name,
+    emp_number,
+    total_salary
+  from ranked_departments
+  where mod(rank, 2) = 1
+)
+/*
+The resulting table should contain columns for department name, number of employees, and total salary, sorted as described.
+*/
+select * 
+from odd_ranked_departments
+order by 
+  total_salary desc,
+  emp_number desc
+  
+  /*
+select
+  id,
+  full_name,
+  salary,
+  department
+from
+  playground.emp
+  */
+
+
+
+
+
+
+--
+video
+--
+
+
+step 1
+
+
+lets start by breaking things down and looking at each table
+
+select 
+  id,
+  name
+from
+  playground.dept
+  
+  
+select
+  id,
+  full_name,
+  salary,
+  department
+from
+  playground.emp
+  
+
+so we can see we have a common element, in department.id and employee.department
+since we need records that match on both sides, we'll using a inner or simple join
+  select 
+    d.name as dep_name,
+    count(e.id) as emp_number,
+    sum(e.salary) as total_salary,
+    d.id as department_id
+  from
+    playground.dept d
+    join playground.emp e on d.id = e.department
+  
+  group by
+    d.id, d.name
+  
+and in order to meet the requirement of 'Select departments that have no more than 5 employees.',
+we'll add a having clause and select departments that have less than or equal to 5 employees
+    select 
+    d.name as dep_name,
+    count(e.id) as emp_number,
+    sum(e.salary) as total_salary,
+    d.id as department_id
+  from
+    playground.dept d
+    join playground.emp e on d.id = e.department
+  
+  group by
+    d.id, d.name
+  having count(e.id) <= 5
+
+
+
+step 2
+Ok, so now we have our records of departments that have "no more than" 5 employees
+lets convert that into a CTE and create a new query to use that data to order the departments
+by the total salary of its employees
+
+with dept_stats as (
+  select 
+    d.name as dep_name,
+    count(e.id) as emp_number,
+    sum(e.salary) as total_salary,
+    d.id as department_id
+  from
+    playground.dept d
+    join playground.emp e on d.id = e.department
+  
+  group by
+    d.id, d.name
+  having count(e.id) <= 5
+)
+select
+    dep_name,
+    total_salary,
+    emp_number,
+    department_id,
+    row_number() over (
+      order by total_salary desc, 
+      emp_number desc,
+      department_id asc
+    ) as rank
+  from
+    dept_stats
+
+
+
+step 3
+  so now that we have the data in teh order we need it, we can elimnate our odd rows
+  we'll do this by converting our previous query into a new cte, and then query the
+  data but introducing a mod() function call on the rank values
+
+  with dept_stats as (
+    select 
+      d.name as dep_name,
+      count(e.id) as emp_number,
+      sum(e.salary) as total_salary,
+      d.id as department_id
+    from
+      playground.dept d
+      join playground.emp e on d.id = e.department
+    
+    group by
+      d.id, d.name
+    having count(e.id) <= 5
+  ),
+  /*
+  From these, choose departments based on the descending order of the total salary of its employees. In case of a tie in total salary, prioritize the department with the greater number of employees. If still tied, prioritize by the smallest department id. 
+  */
+  ranked_departments as (
+    select
+      dep_name,
+      total_salary,
+      emp_number,
+      department_id,
+      row_number() over (
+        order by total_salary desc, 
+        emp_number desc,
+        department_id asc
+      ) as rank
+    from
+      dept_stats
+  )
+
+  select 
+      dep_name,
+      emp_number,
+      total_salary
+    from ranked_departments
+    where mod(rank, 2) = 1
+
+
+step 4
+  Lastly, we need to get those values ordered as required.  We can convert this latest query into a CTE and then select
+  the data out and order it, or we can just add an order by
+
+
+  with dept_stats as (
+    select 
+      d.name as dep_name,
+      count(e.id) as emp_number,
+      sum(e.salary) as total_salary,
+      d.id as department_id
+    from
+      playground.dept d
+      join playground.emp e on d.id = e.department
+    
+    group by
+      d.id, d.name
+    having count(e.id) <= 5
+  ),
+  /*
+  From these, choose departments based on the descending order of the total salary of its employees. In case of a tie in total salary, prioritize the department with the greater number of employees. If still tied, prioritize by the smallest department id. 
+  */
+  ranked_departments as (
+    select
+      dep_name,
+      total_salary,
+      emp_number,
+      department_id,
+      row_number() over (
+        order by total_salary desc, 
+        emp_number desc,
+        department_id asc
+      ) as rank
+    from
+      dept_stats
+  )
+
+  select 
+      dep_name,
+      emp_number,
+      total_salary
+    from ranked_departments
+    where mod(rank, 2) = 1
+    order by
+      total_salary desc,
+      emp_number desc
+
+
+Alternate:
+
+odd_ranked_departments as (
+  select 
+    dep_name,
+    emp_number,
+    total_salary
+  from ranked_departments
+  where mod(rank, 2) = 1
+)
+/*
+The resulting table should contain columns for department name, number of employees, and total salary, sorted as described.
+*/
+select * 
+from odd_ranked_departments
+order by 
+  total_salary desc,
+  emp_number desc
+
+

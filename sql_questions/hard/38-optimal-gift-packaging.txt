@@ -1,0 +1,110 @@
+38-***Determining Optimal Packaging for Christmas Gifts
+ 
+Given two tables, playground.gifts and playground.packages, write a SQL query to match each gift to the smallest package it fits into based on dimensions. A gift fits in a package if its dimensions are less than or equal to those of the package. A package is considered smaller than another if its volume is smaller. Each package can hold only one gift. Produce a table with columns: package_type and number, where number indicates how many gifts are matched to each package_type. Exclude package types not used. Sort the result by package_type in ascending order. Assume every gift fits in at least one package and no two packages have the same volume.
+
+These are the tables to query for this question:
+playground.gifts
+id int
+gift_name string
+length int
+width int
+height int
+
+playground.packages
+package_type string
+length int
+width int
+height int
+
+Your answer should include these columns:
+package_type varchar
+number integer
+
+
+-- 
+solution
+--
+
+-- SELECT * FROM playground.gifts LIMIT 100
+-- SELECT * FROM playground.packages LIMIT 100
+
+-- get the sizes and volumes for gifts
+with gift_volumes as (
+  select
+    id,
+    gift_name,
+    length * width * height as volume,
+    length,
+    width,
+    height
+  from
+    playground.gifts
+),
+-- get the sizes and volumes for packages
+package_volumes as (
+  select 
+    package_type,
+    length * width * height as volume,
+    length,
+    width,
+    height
+  from
+    playground.packages
+),
+gift_package_matches as (
+
+  select
+    g.id as gift_id,
+    p.package_type,
+    row_number() over(partition by g.id order by p.volume asc) as rank
+  from
+    gift_volumes g
+    join package_volumes p on g.length <= p.length 
+      and g.height <= p.height
+)
+
+select
+  package_type,
+  count(gift_id) as number
+from
+  gift_package_matches
+where
+  rank = 1
+group by
+  package_type
+order by
+  package_type asc
+  
+
+  
+-- video
+
+-- steps to construct
+
+step 1
+get the volumes
+// get the sizes and volumes for gifts
+select
+  id,
+  gift_name,
+  length * width * height as volume,
+  length,
+  width,
+  height
+from
+  playground.gifts
+  
+  
+select 
+  package_type,
+  length * width * height as volume,
+  length,
+  width,
+  height
+from
+  playground.packages
+
+
+step 2
+convert to cte's, and build a new query to get the matches
+

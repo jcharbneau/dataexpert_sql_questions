@@ -1,0 +1,122 @@
+16-Salary Range Difference
+ 
+Calculate the difference between the sum of the highest salaries and the sum of the lowest salaries in the company. The table "playground.employees_salary" contains columns "id" (unique employee ID), "name" (employee's name), and "salary" (employee's salary as a positive integer). The result should be a single column "difference" with one row representing the calculated difference. If the "playground.employees_salary" table is empty, "difference" should be 0.
+
+
+
+--
+solution
+--
+-- SELECT * FROM playground.employees_salary LIMIT 100
+
+with ranked_salaries as (
+  select
+    salary,
+    rank() over (order by salary desc) as desc_rank,
+    rank() over (order by salary asc) as asc_rank
+  from playground.employees_salary
+  
+),
+aggregated_salaries as (
+  select 
+     sum(case when desc_rank = 1 then salary else 0 end) as sum_highest_salaries,
+     sum(case when asc_rank = 1 then salary else 0 end) as sum_lowest_salaries
+   from ranked_salaries
+)
+
+select 
+  sum_highest_salaries - sum_lowest_salaries as difference
+from aggregated_salaries
+
+
+
+
+
+
+
+
+--
+video
+--
+
+
+step 1
+https://trino.io/docs/current/functions/window.html?highlight=rank#ranking-functions
+
+select 
+   salary
+from
+  playground.employees_salary
+
+
+
+step 2
+so lets focus in on the first sentence: "Calculate the difference between the sum of the highest salaries and the sum of the lowest salaries in the company."
+
+we need to get the sum the highest and lowest salaries implies we need to rank the salary data
+select
+  salary,
+  rank() over (order by salary desc) as desc_rank,
+  rank() over (order by salary asc) as asc_rank
+from
+  playground.employees_salary
+
+
+  understand rank() - 
+  If any rows have the same value in the column used for ordering, they are ranked the same. The RANK() function leaves gaps in such cases
+
+step 3
+so lets turn this into a cte and then sum aggregrate our highest and lowest salaries so that we get our values necessary to calculate our difference
+
+with ranked_salaries as (
+  select
+    salary,
+    rank() over (order by salary desc) as desc_rank,
+    rank() over (order by salary asc) as asc_rank
+  from playground.employees_salary
+  
+)
+select 
+   sum(case when desc_rank = 1 then salary else 0 end) as sum_highest_salaries,
+   sum(case when asc_rank = 1 then salary else 0 end) as sum_lowest_salaries
+ from ranked_salaries
+
+step 4
+
+so we can see that we have a sum of our highest at 2600, and a sum of our lowest values at 900, lets take the next step of getting the difference for our final result set
+
+
+with ranked_salaries as (
+  select
+    salary,
+    rank() over (order by salary desc) as desc_rank,
+    rank() over (order by salary asc) as asc_rank
+  from playground.employees_salary
+  
+),
+aggregated_salaries as (
+  select 
+     sum(case when desc_rank = 1 then salary else 0 end) as sum_highest_salaries,
+     sum(case when asc_rank = 1 then salary else 0 end) as sum_lowest_salaries
+   from ranked_salaries
+)
+
+select 
+  sum_highest_salaries - sum_lowest_salaries as difference
+from aggregated_salaries
+
+
+
+---
+alternate approaches
+---
+
+why not this?
+
+select 
+  (select sum(salary) from (select salary from playground.employees_salary order by salary desc limit 1) as highest_salary) - 
+  (select sum(salary) from (select salary from playground.employees_salary order by salary asc limit 1) as lowest_salary) as difference
+
+
+  because it does not take into account ties, and so skews the return result
+
